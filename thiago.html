@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <header>
+  <script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
   <title>Alguém aí?</title>
 </header>
 <body>
-    <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
     <div id="player" class="center-block"></div>
 	
 	<div class="form-group">
@@ -20,14 +20,40 @@
       var firstScriptTag = document.getElementsByTagName('script')[0];
       firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-      // 3. This function creates an <iframe> (and YouTube player)
-      //    after the API code downloads.
+	  var youtubePronto = false;
+	  var videoIdExecucar = "";
       var player;
+	  
+	  
+	  var chave = window.location.hash.substring(1);
+	  
+	  $.getJSON("data/".concat(chave, ".json"),
+	    function (data) {
+		  carregaVideoId(data.videoId);
+	    });
+	  
+	  
+	  function carregaVideoId(var videoId) {
+	    videoIdExecucar = videoId;
+		iniciaPlayerSePossivel();
+	  }
+	  
       function onYouTubeIframeAPIReady() {
+	    youtubePronto = true;
+		iniciaPlayerSePossivel();
+      }
+	  
+	  function iniciaPlayerSePossivel() {
+	    if (youtubePronto && videoIdExecucar != "") {
+		  iniciaPlayer();
+		}
+	  }
+	  
+	  function iniciaPlayer() {
         player = new YT.Player('player', {
           height: '720',
           width: '1280',
-          videoId: 'M7lc1UVf-VE',
+          videoId: videoIdExecucar,
           playerVars: {
             'controls' : 0,
             'showinfo' : 0,
